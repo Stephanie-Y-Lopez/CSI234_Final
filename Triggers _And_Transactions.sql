@@ -23,9 +23,13 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Error handling
-        PRINT 'Error occurred in trig_AfterAnimalUpdate: ' + ERROR_MESSAGE();
+        PRINT 'Error occurred in trig_AfterAnimalUpdate.';
     END CATCH;
 END;
+-- Test Case: Updates animals name.
+UPDATE Animal SET AnimalName = 'Buddy' WHERE AnimalID = 2;
+--Whats happening: It logs the update into the AdoptionHistory table.
+
 
 
 -- AFTER DELETE Trigger
@@ -48,9 +52,13 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Error handling
-        PRINT 'Error occurred in trig_AfterAnimalDelete: ' + ERROR_MESSAGE();
+        PRINT 'Error occurred in trig_AfterAnimalDelete.';
     END CATCH;
 END;
+-- Test Case: Delete an animal
+DELETE FROM Animal WHERE AnimalID = 4;
+--Whats happening: It logs the deletion into the AdoptionHistory table with the animals details.
+
 
 
 --Rocursion prevention for triggers.
@@ -80,7 +88,12 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Error handling
-        PRINT 'Error occurred in trig_InsteadOfAnimalTypeDelete: ' + ERROR_MESSAGE();
+        PRINT 'Error occurred in trig_InsteadOfAnimalTypeDelete.';
         ROLLBACK TRANSACTION;
     END CATCH;
 END;
+-- Test Case: Prevent deletion
+DELETE FROM AnimalType WHERE AnimalTypeID = 1;
+-- Whats happening: Its checking if any animals are associated with the AnimalTypeID.
+-- Test case error: Delete an unused AnimalType
+DELETE FROM AnimalType WHERE AnimalTypeID = 5;

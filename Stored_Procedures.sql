@@ -22,9 +22,13 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Error handling
-        PRINT 'Error occurred in GetAvailableAnimals: ' + ERROR_MESSAGE();
+        PRINT 'Error occurred in GetAvailableAnimals: ';
     END CATCH;
 END;
+-- Test Case: Existing available animals
+EXEC GetAvailableAnimals;
+--Whats happening: Its joining mutiple tables because of the FK's, and returning the details of animals with the status 'Available'.
+
 
 
 -- Complex Procedure
@@ -37,7 +41,6 @@ CREATE PROCEDURE AddAdoption
 AS
 BEGIN
     BEGIN TRY
-        -- Input Validation
         IF NOT EXISTS (SELECT 1 FROM Animal WHERE AnimalID = @AnimalID)
         BEGIN
             PRINT 'Invalid AnimalID';
@@ -72,9 +75,17 @@ BEGIN
     BEGIN CATCH
         -- Rollback on error
         ROLLBACK TRANSACTION;
-        PRINT 'Error occurred in AddAdoption: ' + ERROR_MESSAGE();
+        PRINT 'Error occurred in AddAdoption: ';
     END CATCH;
 END;
+-- Test Case: Adding valid adoption record.
+EXEC AddAdoption 
+    @AnimalID = 3, 
+    @AdopterID = 5, 
+    @AdoptionDate = '2024-11-20', 
+    @AdoptionFeeID = 2;
+-- Whats happening: Its inserting a new adoption record in the adoption table, and updating the animal status to adopted.
+
 
 
 -- Advanced Procedure
@@ -111,6 +122,11 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Error handling
-        PRINT 'Error occurred in GetAdoptionDetails: ' + ERROR_MESSAGE();
+        PRINT 'Error occurred in GetAdoptionDetails: ';
     END CATCH;
 END;
+-- Test Case: Getting details of adopters adoption.
+EXEC GetAdoptionDetails @AdopterID = 5;
+-- Whats happening: It brings back the animal and adopters details.
+--Test case error: Invalid AdopterID
+EXEC GetAdoptionDetails @AdopterID = 9999;
